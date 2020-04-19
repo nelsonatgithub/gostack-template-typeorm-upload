@@ -16,6 +16,35 @@ interface TransactionProps {
   type: 'income' | 'outcome';
 }
 
+interface ReturnableTransaction {
+  title: string;
+  value: number;
+  type: 'income' | 'outcome';
+  category: ReturnableCategory;
+}
+
+interface ReturnableCategory {
+  id: string;
+  title: string;
+}
+
+const categoryParser: (
+  category: Category,
+) => ReturnableCategory = category => ({
+  id: category.id,
+  title: category.title,
+});
+
+const transactionParser: (
+  transaction: Transaction,
+) => ReturnableTransaction = transaction => ({
+  id: transaction.id,
+  title: transaction.title,
+  value: transaction.value,
+  type: transaction.type,
+  category: categoryParser(transaction.category),
+});
+
 const transactionReducer: (
   balance: Balance,
   transaction: Transaction,
@@ -61,6 +90,11 @@ class TransactionsRepository extends Repository<Transaction> {
     transaction.type = transactionProps.type;
     transaction.category = category;
     return this.save(transaction);
+  }
+
+  public async getTransactions(): Promise<ReturnableTransaction[]> {
+    const transactionList = await this.find({ relations: ['category'] });
+    return transactionList.map(transactionParser);
   }
 
   public async getBalance(): Promise<Balance> {
