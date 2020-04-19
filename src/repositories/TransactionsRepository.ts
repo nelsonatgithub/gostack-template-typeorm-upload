@@ -60,9 +60,7 @@ class TransactionsRepository extends Repository<Transaction> {
     transaction.value = transactionProps.value;
     transaction.type = transactionProps.type;
     transaction.category = category;
-    await this.save(transaction);
-
-    return transaction;
+    return this.save(transaction);
   }
 
   public async getBalance(): Promise<Balance> {

@@ -5,9 +5,10 @@ import multer from 'multer';
 import TransactionsRepository from '../repositories/TransactionsRepository';
 import CreateTransactionService from '../services/CreateTransactionService';
 import DeleteTransactionService from '../services/DeleteTransactionService';
-import ImportTransactionsService from '../services/ImportTransactionsService';
+import ImportTransactionsService, {
+  SupportedFormats,
+} from '../services/ImportTransactionsService';
 import Transaction from '../models/Transaction';
-import fromCSV from '../services/TransactionParser';
 
 const transactionsRouter = Router();
 
@@ -54,14 +55,11 @@ const uploadCSV = multer({ dest: 'tmp/' }).single('file');
 
 transactionsRouter.post('/import', uploadCSV, async (request, response) => {
   const { path: csvFilePath } = request.file;
-  const transactionPropList: TransactionProps[] = await fromCSV(csvFilePath);
 
   const repo = getCustomRepository(TransactionsRepository);
-  const service = new ImportTransactionsService(repo);
+  const service = new ImportTransactionsService(SupportedFormats.csv, repo);
 
-  const transactionList: Transaction[] = await service.execute(
-    transactionPropList,
-  );
+  const transactionList: Transaction[] = await service.execute(csvFilePath);
 
   return response.status(200).json(transactionList);
 });
