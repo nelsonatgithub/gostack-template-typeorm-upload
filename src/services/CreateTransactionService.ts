@@ -27,10 +27,7 @@ class CreateTransactionService {
     if (isOutcome && invalidBalance) {
       throw new AppError('Invalid balance for outcome transaction');
     }
-    const transaction = await this.transactionRepo.createOrUpdate(
-      transactionProps,
-    );
-    return transaction;
+    return this.transactionRepo.createOrUpdate(transactionProps);
   }
 }
 

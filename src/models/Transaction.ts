@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import Category from './Category';
 
 @Entity('transactions')
@@ -21,10 +28,10 @@ class Transaction {
   @ManyToOne(() => Category, category => category.transactions)
   category: Category;
 
-  @Column('timestamp with time zone')
+  @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 
-  @Column('timestamp with time zone')
+  @UpdateDateColumn({ type: 'timestamptz' })
   updated_at: Date;
 }
 
