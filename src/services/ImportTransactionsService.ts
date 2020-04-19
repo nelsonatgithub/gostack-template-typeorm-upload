@@ -33,10 +33,7 @@ class ImportTransactionsService {
     this.service = new CreateTransactionService(repository);
   }
 
-  async execute(
-    filePath: string,
-    shouldDelete = false,
-  ): Promise<Transaction[]> {
+  async execute(filePath: string, shouldDelete = true): Promise<Transaction[]> {
     const transactionList: Transaction[] = [];
 
     const promiseChain = Promise.resolve();
